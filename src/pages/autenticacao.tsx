@@ -2,14 +2,26 @@ import AuthInput from "@/components/auth/AuthInput";
 import {useState} from "react";
 import {Simulate} from "react-dom/test-utils";
 import submit = Simulate.submit;
-import {IconeGoogle} from "@/components/icons";
+import {IconeAviso, IconeGoogle} from "@/components/icons";
 
 export default function Autenticacao() {
+    const [erro , setErro] = useState(null)
     const [modo, setModo] = useState<'login' | 'cadastro'>('login')
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
 
+    function exibirErro(msg , tempo=5) {
+        setErro(msg)
+        setTimeout(() => setErro(null), tempo*1000)
+    }
     function submeter() {
+        if(modo === 'login'){
+            console.log('login')
+            exibirErro('Ocorreu um erro no login!')
+        }else{
+            console.log('cadastrar')
+            exibirErro("Ocorreu um erro no cadastro !")
+        }
 
     }
 
@@ -30,6 +42,18 @@ export default function Autenticacao() {
             `}>
                     {modo === 'login' ? 'Entre com a Sua Conta' : 'Cadastre-se na Plataforma'}
                 </h1>
+
+                {erro ? (
+                    <div className={` flex items-center 
+                bg-red-400 text-white py-3 px-5 my-2
+                border border-red-700 rounded-lg
+                `}>
+                        {IconeAviso}
+                        <span className={`ml-3`}>{erro}</span>
+                    </div>
+                ):false}
+
+
                 <AuthInput
                     label="Email"
                     valor={email}
