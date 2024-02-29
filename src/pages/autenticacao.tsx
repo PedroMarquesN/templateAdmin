@@ -3,8 +3,11 @@ import {useState} from "react";
 import {Simulate} from "react-dom/test-utils";
 import submit = Simulate.submit;
 import {IconeAviso, IconeGoogle} from "@/components/icons";
+import useAuth from "@/data/hook/useAuth";
 
 export default function Autenticacao() {
+    const { usuario, loginGoogle} = useAuth()
+
     const [erro , setErro] = useState(null)
     const [modo, setModo] = useState<'login' | 'cadastro'>('login')
     const [email, setEmail] = useState('')
@@ -81,7 +84,9 @@ export default function Autenticacao() {
                 <hr className="my-6 border-gray-300 w-full"/>
 
 
-                <button className={`flex items-center justify-center
+                <button
+                    onClick={loginGoogle}
+                    className={`flex items-center justify-center
                     w-full bg-indigo-400 hover:bg-indigo-300
                     text-white rounded-lg px-4 py-3
                     `}>
