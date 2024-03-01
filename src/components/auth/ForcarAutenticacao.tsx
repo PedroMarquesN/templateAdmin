@@ -3,7 +3,7 @@ import Image from "next/image";
 import loading from "../../../public/images/loading.gif"
 import UseAuth from "@/data/hook/useAuth";
 import route from "next/router";
-export default function ForcarAutenticacao(props) {
+export default function ForcarAutenticacao(props:any) {
 
     const {usuario , carregando} = UseAuth()
     function renderizarConteudo() {

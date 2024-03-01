@@ -41,7 +41,7 @@ function gerenciarCookie(logado:boolean) {
     }
 }
 
-export function AuthProvider(props:any){
+export function AuthProvider(props){
     const [usuario, setUsuario] = useState<Usuario>(null)
     const [carregando , setCarregando] = useState(true)
 
