@@ -24,7 +24,7 @@ export function AppProvider(props:any) {
 
     useEffect(() => {
        const temaSalvo = localStorage.getItem('tema')
-        setTema(temaSalvo || 'dark');
+        setTema(temaSalvo);
     }, []);
 
     return(
