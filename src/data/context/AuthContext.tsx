@@ -8,6 +8,7 @@ import Cookies from "js-cookie"
 interface AuthContextProps {
     usuario : Usuario
     loginGoogle:() => Promise<void>
+    logout?:() => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextProps>({})
@@ -43,39 +44,62 @@ export function AuthProvider(props){
 
 
     async function configurarSessao(usuarioFirebase) {
-        const usuario = await usuarioNormalizado(usuarioFirebase)
-        if (usuarioFirebase){
-            setUsuario(usuario)
-            gerenciarCookie(true)
-            setCarregando(false)
-            return usuario.email
-        }else {
-            setUsuario(null)
-            gerenciarCookie(false)
-            setCarregando(false)
-            return false
+        if (usuarioFirebase) {
+            const usuario = await usuarioNormalizado(usuarioFirebase);
+            setUsuario(usuario);
+            gerenciarCookie(true);
+            setCarregando(false);
+            return usuario.email;
+        } else {
+            setUsuario(null);
+            gerenciarCookie(false);
+            setCarregando(false);
+            return false;
         }
     }
 
 
+
     async function loginGoogle() {
-        const resp =  await firebase.auth().signInWithPopup(
-            new firebase.auth.GoogleAuthProvider()
-        )
+        try {
+            setCarregando(true)
+            const resp =  await firebase.auth().signInWithPopup(
+                new firebase.auth.GoogleAuthProvider()
+            )
             configurarSessao(resp.user)
             route.push('/')
+        }finally {
+            setCarregando(false)
+        }
+
+    }
+
+    async function logout() {
+        try {
+            setCarregando(true)
+            await firebase.auth().signOut()
+            await configurarSessao(null)
+
+        }finally {
+            setCarregando(false)
+
+        }
     }
 
     useEffect(()=> {
-        const cancelar =firebase.auth().onIdTokenChanged(configurarSessao)
-        return () => cancelar()
+        if (Cookies.get('admin-template-marques-auth')){
+            const cancelar =firebase.auth().onIdTokenChanged(configurarSessao)
+            return () => cancelar()
+        }
+
     },[])
 
 
     return (
         <AuthContext.Provider value={{
             usuario,
-            loginGoogle
+            loginGoogle,
+            logout
         }}>
             {props.children}
         </AuthContext.Provider>
