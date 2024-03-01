@@ -62,7 +62,7 @@ export function AuthProvider(props){
     }
 
 
-    async function login(email , senha) {
+    async function login(email:any , senha:any) {
         try {
             setCarregando(true)
             const resp =  await firebase.auth().signInWithEmailAndPassword(email, senha)
@@ -73,7 +73,7 @@ export function AuthProvider(props){
         }
 
     }
-    async function cadastrar(email , senha) {
+    async function cadastrar(email:any , senha:any) {
         try {
             setCarregando(true)
             const resp =  await firebase.auth().createUserWithEmailAndPassword(email, senha)

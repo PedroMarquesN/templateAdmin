@@ -7,9 +7,12 @@ interface AppContextProps {
 
 }
 
-const AppContext = createContext({})
+const AppContext = createContext<AppContextProps>({
+    tema: '',
+    alternarTema: () => {}
+});
 
-export function AppProvider(props) {
+export function AppProvider(props:any) {
     const [tema, setTema] = useState('dark')
 
     function alternarTema() {
