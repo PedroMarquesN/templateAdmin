@@ -14,6 +14,7 @@ const AuthContext = createContext<AuthContextProps>({})
 
 async function usuarioNormalizado(usuarioFirebase: firebase.User): Promise<Usuario>{
     const token = await usuarioFirebase.getIdToken()
+
     return {
         uid: usuarioFirebase.uid,
         nome: usuarioFirebase.displayName,
@@ -35,8 +36,10 @@ export function AuthProvider(props){
         const resp =  await firebase.auth().signInWithPopup(
             new firebase.auth.GoogleAuthProvider()
         )
+        console.log(resp.user)
         if(resp.user?.email){
             const usuario = await usuarioNormalizado(resp.user)
+            setUsuario(usuario)
             route.push('/')
         }
 
