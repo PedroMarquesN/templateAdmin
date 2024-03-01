@@ -47,7 +47,7 @@ export function AuthProvider(props:any){
     const [carregando , setCarregando] = useState(true)
 
 
-    async function configurarSessao(usuarioFirebase) {
+    async function configurarSessao(usuarioFirebase:any) {
         if (usuarioFirebase) {
             const usuario = await usuarioNormalizado(usuarioFirebase);
             setUsuario(usuario);
