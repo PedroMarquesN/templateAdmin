@@ -2,6 +2,7 @@ import firebase from "../../firebase/config"
 import {createContext, useEffect, useState} from "react";
 import Usuario from "../../model/Usuario";
 import route from "next/router";
+// @ts-ignore
 import Cookies from "js-cookie"
 
 
