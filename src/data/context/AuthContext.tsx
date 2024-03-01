@@ -1,7 +1,8 @@
 import firebase from "../../firebase/config"
-import {createContext, useState} from "react";
+import {createContext, useEffect, useState} from "react";
 import Usuario from "../../model/Usuario";
 import route from "next/router";
+import Cookies from "js-cookie"
 
 
 interface AuthContextProps {
@@ -22,39 +23,61 @@ async function usuarioNormalizado(usuarioFirebase: firebase.User): Promise<Usuar
         token,
         provedor: usuarioFirebase.providerData[0].providerId,
         imagemUrl: usuarioFirebase.photoURL
-
-
     }
 
 }
 
+function gerenciarCookie(logado:boolean) {
+    if(logado){
+        Cookies.set('admin-template-marques-auth', logado, {
+            expires: 7
+        })
+    }else{
+        Cookies.remove('admin-template-marques-auth')
+    }
+}
+
 export function AuthProvider(props){
     const [usuario, setUsuario] = useState<Usuario>(null)
+    const [carregando , setCarregando] = useState(true)
+
+
+    async function configurarSessao(usuarioFirebase) {
+        const usuario = await usuarioNormalizado(usuarioFirebase)
+        if (usuarioFirebase){
+            setUsuario(usuario)
+            gerenciarCookie(true)
+            setCarregando(false)
+            return usuario.email
+        }else {
+            setUsuario(null)
+            gerenciarCookie(false)
+            setCarregando(false)
+            return false
+        }
+    }
 
 
     async function loginGoogle() {
         const resp =  await firebase.auth().signInWithPopup(
             new firebase.auth.GoogleAuthProvider()
         )
-        console.log(resp.user)
-        if(resp.user?.email){
-            const usuario = await usuarioNormalizado(resp.user)
-            setUsuario(usuario)
+            configurarSessao(resp.user)
             route.push('/')
-        }
-
-
     }
+
+    useEffect(()=> {
+        const cancelar =firebase.auth().onIdTokenChanged(configurarSessao)
+        return () => cancelar()
+    },[])
 
 
     return (
         <AuthContext.Provider value={{
             usuario,
             loginGoogle
-
         }}>
             {props.children}
-
         </AuthContext.Provider>
     )
 }
