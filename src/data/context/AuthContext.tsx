@@ -15,7 +15,7 @@ interface AuthContextProps {
     logout?:() => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextProps>({})
+const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 
 async function usuarioNormalizado(usuarioFirebase: firebase.User): Promise<Usuario>{
